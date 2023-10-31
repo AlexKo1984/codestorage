@@ -1,5 +1,7 @@
 package com.ank.codestorage.model;
 
+import com.ank.codestorage.model.enums.TypeUser;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -14,35 +16,34 @@ import java.util.Set;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-@ToString
-public class User extends AbstractEntity {
-    @NotBlank
-    @Email
-    private String email;
+@Entity
+@Table(name = "user", schema = "public")
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(nullable = false)
+    private String name;
+
     @NotBlank
     @Pattern(regexp="\\S+")
+    @Column(nullable = false)
     private String login;
-    private String name;
-    @Past
-    private LocalDate birthday;
 
-    @Getter(AccessLevel.NONE) @Setter(AccessLevel.NONE)
-    private final Set<Long> friends = new HashSet<>();
+    @NotBlank
+    @Email
+    @Column(nullable = false)
+    private String email;
 
-    public void addFriend(Long id) {
-        friends.add(id);
-    }
+    @NotBlank
+    @Column(nullable = false)
+    private String password;
 
-    public void removeFriend(Long id) {
-        friends.remove(id);
-    }
-
-    public List<Long> getFiends() {
-        return new ArrayList<>(friends);
-    }
-
-    public boolean containsFriend(Long id){
-        return friends.contains(id);
-    }
+    @Column(name = "type_user")
+    @Enumerated(EnumType.STRING)
+    private TypeUser typeUser;   //Тип пользователя
 }
